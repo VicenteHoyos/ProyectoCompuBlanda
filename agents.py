@@ -366,10 +366,10 @@ class Direction:
             Note that the argument to __add__ must be a string and not a Direction object.
             Also, it (the argument) can only be right or left."""
 
-    R = "right"
-    L = "left"
-    U = "up"
-    D = "down"
+    R = "Derecha"
+    L = "Izquierda"
+    U = "Arriba"
+    D = "Abajo"
 
     def __init__(self, direction):
         self.direction = direction
@@ -579,8 +579,8 @@ class Wall(Obstacle):
 
 class GraphicEnvironment(XYEnvironment):
     def __init__(self, width=10, height=10, boundary=True, color={}, display=False):
-        """Define all the usual XYEnvironment characteristics,
-        but initialise a BlockGrid for GUI too."""
+        """Defina todas las características habituales del entorno XY,
+        pero inicialice un BlockGrid para GUI también."""
         super().__init__(width, height)
         self.grid = BlockGrid(width, height, fill=(200, 200, 200))
         if display:
@@ -592,8 +592,8 @@ class GraphicEnvironment(XYEnvironment):
         self.colors = color
 
     def get_world(self):
-        """Returns all the items in the world in a format
-        understandable by the ipythonblocks BlockGrid."""
+        """Devuelve todos los artículos del mundo en un formato
+        comprensible por el bloque de cuadrícula ipythonblocks."""
         result = []
         x_start, y_start = (0, 0)
         x_end, y_end = self.width, self.height
@@ -604,10 +604,10 @@ class GraphicEnvironment(XYEnvironment):
             result.append(row)
         return result
 
-    """
+
     def run(self, steps=1000, delay=1):
-        "" "Run the Environment for given number of time steps,
-        but update the GUI too." ""
+        """Ejecute el entorno durante un número determinado de pasos de tiempo,
+        pero actualiza la GUI también."""
         for step in range(steps):
             sleep(delay)
             if self.visible:
@@ -619,17 +619,17 @@ class GraphicEnvironment(XYEnvironment):
             self.step()
         if self.visible:
             self.reveal()
-    """
+    
 
-    def run(self, steps=1000, delay=1):
-        """Run the Environment for given number of time steps,
-        but update the GUI too."""
+    """def run(self, steps=1000, delay=1):
+        "Ejecute el entorno durante un número determinado de pasos de tiempo,
+        pero actualiza la GUI también."
         for step in range(steps):
             self.update(delay)
             if self.is_done():
                 break
             self.step()
-        self.update(delay)
+        self.update(delay)"""
 
     def update(self, delay=1):
         sleep(delay)
@@ -640,8 +640,8 @@ class GraphicEnvironment(XYEnvironment):
             self.reveal()
 
     def reveal(self):
-        """Display the BlockGrid for this world - the last thing to be added
-        at a location defines the location color."""
+        """Muestre BlockGrid para este mundo: lo último que se agregará
+        en una ubicación define el color de la ubicación."""
         self.draw_world()
         self.grid.show()
         self.visible = True
@@ -655,7 +655,7 @@ class GraphicEnvironment(XYEnvironment):
                     self.grid[y, x] = self.colors[world[x][y][-1].__class__.__name__]
 
     def conceal(self):
-        """Hide the BlockGrid for this world"""
+        """Ocultar el BlockGrid para este mundo"""
         self.visible = False
         display(HTML(''))
 

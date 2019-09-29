@@ -11,10 +11,10 @@ class Water(Thing):
 
 class EnergeticBlindDog(Agent):
     location = [0,1]
-    direction = Direction("down")
+    direction = Direction("Abajo")
     
     def moveforward(self, success=True):
-        '''moveforward possible only if success (i.e. valid destination location)'''
+        '''avanzar solo si es posible si tiene éxito (es decir, ubicación de destino válida)'''
         if not success:
             return
         if self.direction.direction == Direction.R:
@@ -30,43 +30,43 @@ class EnergeticBlindDog(Agent):
         self.direction = self.direction + d
         
     def eat(self, thing):
-        '''returns True upon success or False otherwise'''
+        '''devuelve verdadero en caso de éxito o falso de lo contrario'''
         if isinstance(thing, Food):
             return True
         return False
     
     def drink(self, thing):
-        ''' returns True upon success or False otherwise'''
+        ''' devuelve verdadero en caso de éxito o falso de lo contrario'''
         if isinstance(thing, Water):
             return True
         return False
         
 def program(percepts):
-    '''Returns an action based on it's percepts'''
+    '''Devuelve una acción basada en sus percepciones'''
         
-    for p in percepts: # first eat or drink - you're a dog!
+    for p in percepts: # primero come o bebe, ¡eres un perro!
         if isinstance(p, Food):
-            return 'eat'
+            return 'Comer'
         elif isinstance(p, Water):
-            return 'drink'
-        if isinstance(p,Bump): # then check if you are at an edge and have to turn
+            return 'Beber'
+        if isinstance(p,Bump): # luego verifique si está al borde y tiene que girar
             turn = False
-            choice = random.choice((1,2));
+            choice = random.choice((1,2))
         else:
-            choice = random.choice((1,2,3,4)) # 1-right, 2-left, others-forward
+            choice = random.choice((1,2,3,4)) # 1-derecha, 2-izquierda, otros-adelante
     if choice == 1:
-        return 'turnright'
+        return 'GiroDerecha'
     elif choice == 2:
-        return 'turnleft'
+        return 'GiroIzquierda'
     else:
-        return 'moveforward'
+        return 'MoverseAdelante'
 
 class Park2D(GraphicEnvironment):
     def percept(self, agent):
-        '''return a list of things that are in our agent's location'''
+        '''devolver una lista de cosas que están en la ubicación de nuestro agente'''
         things = self.list_things_at(agent.location)
-        loc = copy.deepcopy(agent.location) # find out the target location
-        #Check if agent is about to bump into a wall
+        loc = copy.deepcopy(agent.location) # averiguar la ubicación de destino
+        #Verifique si el agente está a punto de chocar contra una pared
         if agent.direction.direction == Direction.R:
             loc[0] += 1
         elif agent.direction.direction == Direction.L:
@@ -80,48 +80,51 @@ class Park2D(GraphicEnvironment):
         return things
     
     def execute_action(self, agent, action):
-        '''changes the state of the environment based on what the agent does.'''
-        if action == 'turnright':
-            print('{} decided to {} at location: {}'.format(str(agent)[1:-1], action, agent.location))
+        '''cambia el estado del entorno en función de lo que hace el agente.'''
+        if action == 'GiroDerecha':
+            print('Nuestro AGENTE ha decidido realizar {} e ir a el lugar: {}'.format( action, agent.location))
             agent.turn(Direction.R)
-        elif action == 'turnleft':
-            print('{} decided to {} at location: {}'.format(str(agent)[1:-1], action, agent.location))
+        elif action == 'GiroIzquierda':
+            print('Nuestro AGENTE ha decidido realizar {} e ir a el lugar: {}'.format( action, agent.location))
             agent.turn(Direction.L)
-        elif action == 'moveforward':
-            print('{} decided to move {}wards at location: {}'.format(str(agent)[1:-1], agent.direction.direction, agent.location))
+        elif action == 'MoverseAdelante':
+            print('Nuestro AGENTE ha decidido moverse a {} en el lugar: {}'.format( agent.direction.direction, agent.location))
             agent.moveforward()
-        elif action == "eat":
+        elif action == "Comer":
             items = self.list_things_at(agent.location, tclass=Food)
             if len(items) != 0:
                 if agent.eat(items[0]):
-                    print('{} ate {} at location: {}'
-                          .format(str(agent)[1:-1], str(items[0])[1:-1], agent.location))
+                    print('Nuestro AGENTE comio {} en el lugar: {}'.format( str(items[0])[1:-1], agent.location))
                     self.delete_thing(items[0])
-        elif action == "drink":
+        elif action == "Beber":
             items = self.list_things_at(agent.location, tclass=Water)
             if len(items) != 0:
                 if agent.drink(items[0]):
-                    print('{} drank {} at location: {}'
-                          .format(str(agent)[1:-1], str(items[0])[1:-1], agent.location))
+                    print('Nuestro AGENTE bebio {} en el lugar: {}'.format( str(items[0])[1:-1], agent.location))
                     self.delete_thing(items[0])
                     
     def is_done(self):
-        '''By default, we're done when we can't find a live agent, 
-        but to prevent killing our cute dog, we will stop before itself - when there is no more food or water'''
+        '''De forma predeterminada, terminamos cuando no podemos encontrar un agente en vivo,
+        pero para evitar matar a nuestro lindo perro, nos detendremos antes de sí mismo, cuando no haya más comida o agua'''
         no_edibles = not any(isinstance(thing, Food) or isinstance(thing, Water) for thing in self.things)
         dead_agents = not any(agent.is_alive() for agent in self.agents)
         return dead_agents or no_edibles
 
-park = Park2D(5,5, color={'EnergeticBlindDog': (200,0,0), 'Water': (0, 200, 200), 'Food': (230, 115, 40)})
+park = Park2D(5,5, color={'EnergeticBlindDog': (200,0,0), 'Water': (0, 200, 200), 'Food': (500, 115, 40)})
 dog = EnergeticBlindDog(program)
 dogfood = Food()
 water = Water()
 park.add_thing(dog, [0,0])
-park.add_thing(dogfood, [1,2])
-park.add_thing(water, [0,1])
+park.add_thing(dogfood, [1,2]) #definimos ubicación de comida.
+park.add_thing(water, [0,1])#definimos ubicación de Agua.
 morewater = Water()
 morefood = Food()
-park.add_thing(morewater, [2,4])
-park.add_thing(morefood, [4,3])
-print("dog started at [0,0], facing down. Let's see if he found any food or water!")
-park.run(20)
+park.add_thing(morewater, [2,4]) #definimos ubicación de Agua.
+park.add_thing(morefood, [4,3]) #definimos ubicación de comida.
+morewater = Water()
+morefood = Food()
+park.add_thing(morewater, [5,4])#definimos ubicación de Agua.
+park.add_thing(morefood, [6,3]) #definimos ubicación de comida.
+print("el perro comenzo en [0,0], mirando hacia abajo. ¡¡¡A ver si encuentra comida o agua!!!")
+park.run(100) #Definimos la cantidad de pasos que deseamos que realice nuestro agente.
+
